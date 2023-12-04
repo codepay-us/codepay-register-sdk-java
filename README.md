@@ -90,11 +90,11 @@ Help Java developers quickly use ECRHubClient SDK to achieve LAN cross-device se
 Here's an example purchase transaction.
 
 ```java
-import com.wiseasy.ecr.hub.sdk.ECRHubClient;
-import com.wiseasy.ecr.hub.sdk.ECRHubConfig;
-import com.wiseasy.ecr.hub.sdk.ECRHubClientFactory;
-import com.wiseasy.ecr.hub.sdk.model.request.PurchaseRequest;
-import com.wiseasy.ecr.hub.sdk.model.response.PurchaseResponse;
+import com.codepay.ecr.hub.sdk.ECRHubClient;
+import com.codepay.ecr.hub.sdk.ECRHubConfig;
+import com.codepay.ecr.hub.sdk.ECRHubClientFactory;
+import com.codepay.ecr.hub.sdk.model.request.PurchaseRequest;
+import com.codepay.ecr.hub.sdk.model.response.PurchaseResponse;
 
 // 1、Create a client instance By Serial port
 ECRHubConfig config = new ECRHubConfig();
