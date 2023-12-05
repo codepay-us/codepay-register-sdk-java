@@ -17,7 +17,7 @@ Help Java developers quickly use ECRHubClient SDK to achieve LAN cross-device se
 - Suitable for Java language, JDK version 1.8 and above development environment.
 
 ### 2. Steps
-- Download the jar package and add it to your project, please refer to github source code. <a href = "https://github.com/codepay-us/codepay-register-sdk-java" target = "_blank">ecrhub-client-sdk-java</a>
+- Download the jar package and add it to your project, please refer to github source code. <a href = "https://github.com/codepay-us/codepay-register-sdk-java" target = "_blank">codepay-register-sdk-java</a>
 - This JAR depends on some open source third party JARs. If these JARs are not integrated in your project, you will need to manually add dependencies to your project.
 
 ```XML
