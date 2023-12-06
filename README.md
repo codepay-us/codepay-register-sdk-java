@@ -1,4 +1,4 @@
-# ECRHubClient SDK for Java
+# Codepay Register SDK for Java
 
 ## About this sdk
 Help Java developers quickly use Register SDK to achieve LAN cross-device service calls. Developers do not need to care about the complexity of the internal logic , just call a method to complete a functional operation .
