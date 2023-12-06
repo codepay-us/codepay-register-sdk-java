@@ -90,39 +90,35 @@ Help Java developers quickly use ECRHubClient SDK to achieve LAN cross-device se
 Here's an example purchase transaction.
 
 ```java
-import com.codepay.ecr.hub.sdk.ECRHubClient;
-import com.codepay.ecr.hub.sdk.ECRHubConfig;
-import com.codepay.ecr.hub.sdk.ECRHubClientFactory;
-import com.codepay.ecr.hub.sdk.model.request.PurchaseRequest;
-import com.codepay.ecr.hub.sdk.model.response.PurchaseResponse;
+
 
 // 1、Create a client instance By Serial port
-ECRHubConfig config = new ECRHubConfig();
+ECRHubConfig config=new ECRHubConfig();
 
 // Method 1: Specify the serial port name. Please replace "xxxxxx" with the real serial port name. For example: COM6
 // ECRHubClient client = ECRHubClientFactory.create("sp://xxxxxx", config);
 
 // Method 2: Do not specify the serial port name. The SDK will automatically find available serial port
-ECRHubClient client = ECRHubClientFactory.create("sp://", config);
+        ECRHubClient client=ECRHubClientFactory.create("sp://",config);
 
 // 2、Connecting to the server
-client.connect();
+        client.connect();
 
 // 3、Build PurchaseRequest
-PurchaseRequest request = new PurchaseRequest();
-request.setApp_id("Your payment appid"); // Setting your payment application ID
-request.setMerchant_order_no("O123456789");
-request.setOrder_amount("1");
-request.setPay_method_category("BANKCARD");
+        PurchaseRequest request=new PurchaseRequest();
+        request.setApp_id("Your payment appid"); // Setting your payment application ID
+        request.setMerchant_order_no("O123456789");
+        request.setOrder_amount("1");
+        request.setPay_method_category("BANKCARD");
 // Setting read timeout,the timeout set here is valid for this request
 // ECRHubConfig requestConfig = new ECRHubConfig();
 // requestConfig.getSerialPortConfig().setReadTimeout(5 * 60 * 1000);
 // request.setConfig(requestConfig);
-        
+
 // 4、Execute purchase request
-PurchaseResponse response = client.execute(request);
-System.out.println("Purchase Response:" + response);
+        PurchaseResponse response=client.execute(request);
+        System.out.println("Purchase Response:"+response);
 
 // 5、Close connect
-client.disconnect();
+        client.disconnect();
 ```

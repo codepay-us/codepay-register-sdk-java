@@ -1,6 +1,6 @@
 syntax = "proto3";
 package com.wiseasy.ecr.hub.sdk.protobuf;
-option java_package = "com.codepay.ecr.hub.sdk.protobuf";
+option java_package = "com.codepay.register.sdk.protobuf";
 option java_outer_classname = "ECRHubRequestProto";
 message ECRHubRequest {
   /**
