@@ -13,7 +13,7 @@ import java.util.Scanner;
  * @author wangyuxiang
  * @since 2023-10-20 11:48
  */
-public class ECRHubClientServiceTest {
+public class ECRHubDiscoveryServiceTest {
 
     public static void main(String[] args) throws ECRHubException {
         ECRHubDiscoveryService service = getEcrHubClientService();
