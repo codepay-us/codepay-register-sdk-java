@@ -8,7 +8,7 @@ import java.util.List;
  * @author wangyuxiang
  * @since 2023-10-20 11:34
  */
-public interface ECRHubClientService {
+public interface ECRHubDiscoveryService {
 
     void start() throws ECRHubException;
 

@@ -41,9 +41,9 @@ import java.util.concurrent.TimeUnit;
  * @author wangyuxiang
  * @since 2023-10-18 16:50
  */
-public class ECRHubClientWebSocketService implements WebSocketClientListener, ECRHubClientService {
+public class ECRHubWebSocketDiscoveryService implements WebSocketClientListener, ECRHubDiscoveryService {
 
-    private static final Logger log = LoggerFactory.getLogger(ECRHubClientWebSocketService.class);
+    private static final Logger log = LoggerFactory.getLogger(ECRHubWebSocketDiscoveryService.class);
 
     private static final String ECR_HUB_CLIENT_MDNS_SERVICE_TYPE = "_ecr-hub-client._tcp.local.";
     private static final String ECR_HUB_SERVER_MDNS_SERVICE_TYPE = "_ecr-hub-server._tcp.local.";
@@ -58,7 +58,7 @@ public class ECRHubClientWebSocketService implements WebSocketClientListener, EC
     private DeviceServiceListener deviceServiceListener;
 
 
-    private ECRHubClientWebSocketService() {
+    private ECRHubWebSocketDiscoveryService() {
         storage = ECRHubDeviceStorage.getInstance();
         deviceMap = new ConcurrentHashMap<>(1);
     }
@@ -75,10 +75,10 @@ public class ECRHubClientWebSocketService implements WebSocketClientListener, EC
 
 
     private static class ECRHubDeviceManageHolder {
-        private static final ECRHubClientWebSocketService INSTANCE = new ECRHubClientWebSocketService();
+        private static final ECRHubWebSocketDiscoveryService INSTANCE = new ECRHubWebSocketDiscoveryService();
     }
 
-    public static ECRHubClientWebSocketService getInstance() {
+    public static ECRHubWebSocketDiscoveryService getInstance() {
         return ECRHubDeviceManageHolder.INSTANCE;
     }
 

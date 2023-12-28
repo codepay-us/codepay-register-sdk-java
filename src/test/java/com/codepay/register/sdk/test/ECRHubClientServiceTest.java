@@ -1,7 +1,7 @@
 package com.codepay.register.sdk.test;
 
-import com.codepay.register.sdk.device.ECRHubClientService;
-import com.codepay.register.sdk.device.ECRHubClientWebSocketService;
+import com.codepay.register.sdk.device.ECRHubDiscoveryService;
+import com.codepay.register.sdk.device.ECRHubWebSocketDiscoveryService;
 import com.codepay.register.sdk.device.ECRHubDevice;
 import com.codepay.register.sdk.device.ECRHubDeviceEventListener;
 import com.codepay.register.sdk.exception.ECRHubException;
@@ -16,7 +16,7 @@ import java.util.Scanner;
 public class ECRHubClientServiceTest {
 
     public static void main(String[] args) throws ECRHubException {
-        ECRHubClientService service = getEcrHubClientService();
+        ECRHubDiscoveryService service = getEcrHubClientService();
 
         Scanner scanner = new Scanner(System.in);
 
@@ -64,8 +64,8 @@ public class ECRHubClientServiceTest {
 
     }
 
-    private static ECRHubClientService getEcrHubClientService() throws ECRHubException {
-        ECRHubClientService service = ECRHubClientWebSocketService.getInstance();
+    private static ECRHubDiscoveryService getEcrHubClientService() throws ECRHubException {
+        ECRHubDiscoveryService service = ECRHubWebSocketDiscoveryService.getInstance();
         service.setDeviceEventListener(new ECRHubDeviceEventListener() {
 
             /**
