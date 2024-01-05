@@ -4,6 +4,7 @@ import com.codepay.register.sdk.ECRHubClient;
 import com.codepay.register.sdk.ECRHubClientFactory;
 import com.codepay.register.sdk.ECRHubConfig;
 import com.codepay.register.sdk.ECRHubResponseCallBack;
+import com.codepay.register.sdk.enums.EPayScenario;
 import com.codepay.register.sdk.exception.ECRHubException;
 import com.codepay.register.sdk.exception.ECRHubTimeoutException;
 import com.codepay.register.sdk.model.request.CloseRequest;
@@ -46,7 +47,7 @@ public class ECRHubWebSocketClientTest {
         request.setApp_id(APP_ID);
         request.setMerchant_order_no("O" + System.currentTimeMillis());
         request.setOrder_amount("10");
-        request.setPay_method_category("BANKCARD");
+        request.setPay_scenario(EPayScenario.SWIPE_CARD.getVal());
         request.setConfig(requestConfig);
 
         // Execute purchase request
@@ -63,7 +64,7 @@ public class ECRHubWebSocketClientTest {
         request.setMerchant_order_no("O" + System.currentTimeMillis());
         request.setOrder_amount("10");
         request.setTip_amount("2");
-        request.setPay_method_category("BANKCARD");
+        request.setPay_scenario(EPayScenario.SWIPE_CARD.getVal());
 
         // Execute purchase request
         // Asynchronous return result
@@ -93,7 +94,7 @@ public class ECRHubWebSocketClientTest {
         request.setOrig_merchant_order_no("O1695032342508");
         request.setMerchant_order_no("O" + System.currentTimeMillis());
         request.setOrder_amount("1");
-        request.setPay_method_category("BANKCARD");
+        request.setPay_scenario(EPayScenario.SWIPE_CARD.getVal());
 
         RefundResponse response = client.execute(request);
         System.out.println("Refund Response:" + response);
