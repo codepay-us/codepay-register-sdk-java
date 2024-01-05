@@ -4,19 +4,17 @@ import cn.hutool.core.net.NetUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.system.SystemUtil;
+import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.codepay.register.sdk.ECRHubClient;
 import com.codepay.register.sdk.ECRHubClientFactory;
 import com.codepay.register.sdk.enums.EResponseCode;
 import com.codepay.register.sdk.enums.ETopic;
 import com.codepay.register.sdk.exception.ECRHubException;
-import com.codepay.register.sdk.protobuf.ECRHubRequestProto;
-import com.codepay.register.sdk.protobuf.ECRHubResponseProto;
 import com.codepay.register.sdk.sp.websocket.WebSocketClientEngine;
 import com.codepay.register.sdk.sp.websocket.WebSocketClientListener;
 import com.codepay.register.sdk.sp.websocket.WebSocketServerEngine;
 import com.codepay.register.sdk.utils.NetHelper;
-import com.google.protobuf.InvalidProtocolBufferException;
 import org.java_websocket.WebSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -165,29 +163,28 @@ public class ECRHubWebSocketDiscoveryService implements WebSocketClientListener,
             return;
         }
 
-        String wsAddress = device.getWs_address();
         try {
-            WebSocketClientEngine engine = new WebSocketClientEngine(new URI(wsAddress));
+            String reqId = IdUtil.fastSimpleUUID();
+
+            JSONObject unpair = new JSONObject();
+            unpair.put("topic", ETopic.UN_PAIR.getVal());
+            unpair.put("request_id", reqId);
+            unpair.put("timestamp", System.currentTimeMillis());
+            unpair.put("version", "1.0");
+            unpair.put("device_data", new JSONObject().fluentPut("mac_address", NetHelper.getLocalMacAddress()));
+
+            WebSocketClientEngine engine = new WebSocketClientEngine(new URI(device.getWs_address()));
             engine.connectBlocking(30, TimeUnit.SECONDS);
-            String msgId = IdUtil.fastSimpleUUID();
-            engine.send(ECRHubRequestProto.ECRHubRequest.newBuilder()
-                    .setTopic(ETopic.UN_PAIR.getVal())
-                    .setRequestId(msgId)
-                    .setDeviceData(ECRHubRequestProto.RequestDeviceData.newBuilder()
-                            .setMacAddress(NetHelper.getLocalMacAddress())
-                            .build())
-                    .build()
-                    .toByteArray()
-            );
+            engine.send(unpair.toString());
 
             // The default wait is 60s
-            byte[] buffer = engine.receive(msgId, System.currentTimeMillis(), 60 * 1000);
-            ECRHubResponseProto.ECRHubResponse ecrHubResponse = ECRHubResponseProto.ECRHubResponse.parseFrom(buffer);
-            if (EResponseCode.SUCCESS.equals(ecrHubResponse.getResponseCode())) {
+            byte[] buffer = engine.receive(reqId, System.currentTimeMillis(), 60 * 1000);
+            JSONObject resp = JSON.parseObject(buffer);
+            if (EResponseCode.SUCCESS.equals(resp.getString("response_code"))) {
                 // unpaired succeeded
                 doUnpaired(device);
             }
-        } catch (ECRHubException | InvalidProtocolBufferException | URISyntaxException | InterruptedException e) {
+        } catch (ECRHubException | URISyntaxException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
@@ -236,22 +233,20 @@ public class ECRHubWebSocketDiscoveryService implements WebSocketClientListener,
 
     @Override
     public void onMessage(WebSocket conn, ByteBuffer message) {
-
-        ECRHubRequestProto.ECRHubRequest ecrHubRequest;
+        JSONObject req = null;
         try {
-            ecrHubRequest = ECRHubRequestProto.ECRHubRequest.parseFrom(message.array());
-        } catch (InvalidProtocolBufferException e) {
+            req = JSON.parseObject(message.array());
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-        ECRHubRequestProto.RequestDeviceData deviceData = ecrHubRequest.getDeviceData();
         ECRHubDevice device = new ECRHubDevice();
-        device.setMac_address(deviceData.getMacAddress());
-        device.setIp_address(deviceData.getIpAddress());
-        device.setTerminal_sn(deviceData.getDeviceName());
-        device.setWs_address(buildWSAddress(deviceData.getIpAddress(), Integer.parseInt(deviceData.getPort())));
+        device.setMac_address(req.getString("mac_address"));
+        device.setIp_address(req.getString("ip_address"));
+        device.setTerminal_sn(req.getString("device_name"));
+        device.setWs_address(buildWSAddress(req.getString("ip_address"), Integer.parseInt(req.getString("port"))));
 
-        String topic = ecrHubRequest.getTopic();
+        String topic = req.getString("topic");
         if (ETopic.PAIR.getVal().equals(topic)) {
             doPair(conn, device);
         } else if (ETopic.UN_PAIR.getVal().equals(topic)) {
@@ -267,28 +262,38 @@ public class ECRHubWebSocketDiscoveryService implements WebSocketClientListener,
                 storage.addPairedDevice(device.getTerminal_sn());
             }
 
-            socket.send(ECRHubResponseProto.ECRHubResponse.newBuilder()
-                    .setRequestId(IdUtil.fastSimpleUUID())
-                    .setTopic(ETopic.PAIR.getVal())
-                    .setResponseCode(success ? EResponseCode.SUCCESS.getCode() : "")
-                    .build().toByteArray());
+            JSONObject pair = new JSONObject();
+            pair.put("topic", ETopic.PAIR.getVal());
+            pair.put("request_id", IdUtil.fastSimpleUUID());
+            pair.put("timestamp", System.currentTimeMillis());
+            pair.put("version", "1.0");
+            pair.put("response_code", success ? EResponseCode.SUCCESS.getCode() : "-1");
+            pair.put("response_msg", "");
+            socket.send(pair.toString());
         } else {
             // The default pairing is not set successfully
             storage.addPairedDevice(device.getTerminal_sn());
-            socket.send(ECRHubResponseProto.ECRHubResponse.newBuilder()
-                    .setRequestId(IdUtil.fastSimpleUUID())
-                    .setTopic(ETopic.PAIR.getVal())
-                    .setResponseCode(EResponseCode.SUCCESS.getCode())
-                    .build().toByteArray());
+
+            JSONObject pair = new JSONObject();
+            pair.put("topic", ETopic.PAIR.getVal());
+            pair.put("request_id", IdUtil.fastSimpleUUID());
+            pair.put("timestamp", System.currentTimeMillis());
+            pair.put("version", "1.0");
+            pair.put("response_code", EResponseCode.SUCCESS.getCode());
+            pair.put("response_msg", "");
+            socket.send(pair.toString());
         }
     }
 
     private void cancelPair(WebSocket socket, ECRHubDevice device) {
-        socket.send(ECRHubResponseProto.ECRHubResponse.newBuilder()
-                .setRequestId(IdUtil.fastSimpleUUID())
-                .setTopic(ETopic.UN_PAIR.getVal())
-                .setResponseCode(EResponseCode.SUCCESS.getCode())
-                .build().toByteArray());
+        JSONObject unpair = new JSONObject();
+        unpair.put("topic", ETopic.UN_PAIR.getVal());
+        unpair.put("request_id", IdUtil.fastSimpleUUID());
+        unpair.put("timestamp", System.currentTimeMillis());
+        unpair.put("version", "1.0");
+        unpair.put("response_code", EResponseCode.SUCCESS.getCode());
+        unpair.put("response_msg", "");
+        socket.send(unpair.toString());
 
         storage.removePairedDevice(device.getTerminal_sn());
         if (null != ecrHubDeviceEventListener) {

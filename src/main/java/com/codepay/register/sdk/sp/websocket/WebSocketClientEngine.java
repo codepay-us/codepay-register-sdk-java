@@ -3,11 +3,9 @@ package com.codepay.register.sdk.sp.websocket;
 import cn.hutool.cache.impl.FIFOCache;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.ArrayUtil;
-import com.codepay.register.sdk.exception.ECRHubException;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.codepay.register.sdk.exception.ECRHubTimeoutException;
-import com.codepay.register.sdk.protobuf.ECRHubProtobufHelper;
-import com.codepay.register.sdk.protobuf.ECRHubResponseProto;
-import com.codepay.register.sdk.utils.HexUtil;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.slf4j.Logger;
@@ -52,15 +50,17 @@ public class WebSocketClientEngine extends WebSocketClient {
     public void onMessage(ByteBuffer buffer) {
         byte[] bytes = buffer.array();
         if (log.isDebugEnabled()) {
-            log.debug("onMessage:{}", HexUtil.byte2hex(bytes));
+            log.debug("onMessage:{}", new String(bytes));
         }
-        ECRHubResponseProto.ECRHubResponse resp;
+
+        JSONObject resp;
         try {
-            resp = ECRHubProtobufHelper.parseRespFrom(bytes);
-        } catch (ECRHubException e) {
+            resp = JSON.parseObject(bytes);
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        MSG_CACHE.put(resp.getRequestId(), bytes);
+
+        MSG_CACHE.put(resp.getString("request_id"), bytes);
     }
 
     public byte[] receive(String requestId, long startTime, long timeout) throws ECRHubTimeoutException {
