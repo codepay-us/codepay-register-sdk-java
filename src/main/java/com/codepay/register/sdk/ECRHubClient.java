@@ -8,8 +8,6 @@ public interface ECRHubClient {
 
     boolean connect() throws ECRHubException;
 
-    ECRHubResponse connect2() throws ECRHubException;
-
     boolean isConnected() throws ECRHubException;
 
     boolean disconnect() throws ECRHubException;

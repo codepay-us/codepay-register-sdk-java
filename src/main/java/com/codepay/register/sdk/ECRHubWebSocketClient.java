@@ -4,9 +4,6 @@ import com.codepay.register.sdk.exception.ECRHubException;
 import com.codepay.register.sdk.exception.ECRHubTimeoutException;
 import com.codepay.register.sdk.model.request.ECRHubRequest;
 import com.codepay.register.sdk.model.response.ECRHubResponse;
-import com.codepay.register.sdk.protobuf.ECRHubProtobufHelper;
-import com.codepay.register.sdk.protobuf.ECRHubRequestProto;
-import com.codepay.register.sdk.protobuf.ECRHubResponseProto;
 import com.codepay.register.sdk.sp.websocket.WebSocketClientEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,13 +31,6 @@ public class ECRHubWebSocketClient extends ECRHubAbstractClient {
 
     @Override
     public boolean connect() throws ECRHubException {
-         this.connect2();
-         return true;
-    }
-
-    @Override
-    public ECRHubResponse connect2() throws ECRHubException {
-        long startTime = System.currentTimeMillis();
         int timeout = getConfig().getSocketConfig().getConnTimeout();
         log.info("Connecting...");
 
@@ -54,11 +44,9 @@ public class ECRHubWebSocketClient extends ECRHubAbstractClient {
             throw new ECRHubException("Connection failed");
         }
 
-        ECRHubResponse response = pair(startTime);
         connected = true;
         log.info("Connection successful");
-
-        return response;
+        return true;
     }
 
     @Override
@@ -78,18 +66,8 @@ public class ECRHubWebSocketClient extends ECRHubAbstractClient {
     }
 
     @Override
-    protected ECRHubResponseProto.ECRHubResponse send(ECRHubRequestProto.ECRHubRequest request, long startTime) throws ECRHubException {
-        long timeout = getConfig().getSocketConfig().getConnTimeout();
-
-        engine.send(request.toByteArray());
-
-        byte[] buffer = engine.receive(request.getRequestId(), startTime, timeout);
-        return ECRHubProtobufHelper.parseRespFrom(buffer);
-    }
-
-    @Override
     protected <T extends ECRHubResponse> void sendReq(ECRHubRequest<T> request) throws ECRHubException {
-        byte[] buffer = ECRHubProtobufHelper.pack(request);
+        byte[] buffer = pack(request);
         engine.send(new String(buffer));
     }
 
@@ -99,6 +77,6 @@ public class ECRHubWebSocketClient extends ECRHubAbstractClient {
         long timeout = config.getSocketConfig().getReadTimeout();
 
         byte[] buffer = engine.receive(request.getRequest_id(), System.currentTimeMillis(), timeout);
-        return buildResp(request.getResponseClass(), buffer);
+        return unpack(request.getResponseClass(), buffer);
     }
 }

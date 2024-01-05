@@ -44,7 +44,15 @@ public enum EPayMethod {
     /**
      * Tencent’s mobile payment wallet in Shenzhen, China
      */
-    WeChatPay("WeChatPay");
+    WeChatPay("WeChatPay"),
+    /**
+     * PayPal
+     */
+    PayPal("PayPal"),
+    /**
+     * Venmo
+     */
+    Venmo("Venmo");
 
     EPayMethod(String val) {
         this.val = val;

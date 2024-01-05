@@ -7,11 +7,11 @@ import com.codepay.register.sdk.ECRHubResponseCallBack;
 import com.codepay.register.sdk.exception.ECRHubException;
 import com.codepay.register.sdk.exception.ECRHubTimeoutException;
 import com.codepay.register.sdk.model.request.CloseRequest;
-import com.codepay.register.sdk.model.request.PurchaseRequest;
+import com.codepay.register.sdk.model.request.SaleRequest;
 import com.codepay.register.sdk.model.request.QueryRequest;
 import com.codepay.register.sdk.model.request.RefundRequest;
 import com.codepay.register.sdk.model.response.CloseResponse;
-import com.codepay.register.sdk.model.response.PurchaseResponse;
+import com.codepay.register.sdk.model.response.SaleResponse;
 import com.codepay.register.sdk.model.response.QueryResponse;
 import com.codepay.register.sdk.model.response.RefundResponse;
 import org.junit.jupiter.api.BeforeAll;
@@ -42,7 +42,7 @@ public class ECRHubWebSocketClientTest {
         requestConfig.getSerialPortConfig().setReadTimeout(5 * 60 * 1000);
 
         // Purchase
-        PurchaseRequest request = new PurchaseRequest();
+        SaleRequest request = new SaleRequest();
         request.setApp_id(APP_ID);
         request.setMerchant_order_no("O" + System.currentTimeMillis());
         request.setOrder_amount("10");
@@ -50,7 +50,7 @@ public class ECRHubWebSocketClientTest {
         request.setConfig(requestConfig);
 
         // Execute purchase request
-        PurchaseResponse response = client.execute(request);
+        SaleResponse response = client.execute(request);
         System.out.println("Purchase Response:" + response);
     }
 
@@ -58,7 +58,7 @@ public class ECRHubWebSocketClientTest {
     @DisplayName("purchase async")
     public void purchase_async() throws ECRHubException {
         // Purchase
-        PurchaseRequest request = new PurchaseRequest();
+        SaleRequest request = new SaleRequest();
         request.setApp_id(APP_ID);
         request.setMerchant_order_no("O" + System.currentTimeMillis());
         request.setOrder_amount("10");
@@ -67,9 +67,9 @@ public class ECRHubWebSocketClientTest {
 
         // Execute purchase request
         // Asynchronous return result
-        client.asyncExecute(request, new ECRHubResponseCallBack<PurchaseResponse>() {
+        client.asyncExecute(request, new ECRHubResponseCallBack<SaleResponse>() {
             @Override
-            public void onResponse(PurchaseResponse response) {
+            public void onResponse(SaleResponse response) {
                 System.out.println("Purchase onCompleted:" + response);
             }
 

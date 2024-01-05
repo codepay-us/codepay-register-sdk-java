@@ -1,14 +1,11 @@
 package com.codepay.register.sdk.model.response;
 
-import com.alibaba.fastjson2.annotation.JSONField;
-
 import java.util.List;
 
 public class PaymentInitResponse extends ECRHubResponse {
     /**
      * Payment method category list
      */
-    @JSONField(name = "payMethodCategoryList")
     private List<PayMethodCategory> pay_method_category_list;
 
 
@@ -24,12 +21,10 @@ public class PaymentInitResponse extends ECRHubResponse {
         /**
          * Payment method category
          */
-        @JSONField(name = "payMethodCategory")
         private String pay_method_category;
         /**
          * Payment method list
          */
-        @JSONField(name = "payMethodList")
         private List<PayMethod> pay_method_list;
 
         public String getPay_method_category() {
@@ -54,21 +49,18 @@ public class PaymentInitResponse extends ECRHubResponse {
              *
              * Example: Visa
              */
-            @JSONField(name = "payMethodId")
             private String pay_method_id;
             /**
              * Payment method name
              *
              * Example: Visa
              */
-            @JSONField(name = "payMethodName")
             private String pay_method_name;
             /**
              * Support transaction type list
              *
              * Example: ["1", "2", "3", ...]
              */
-            @JSONField(name = "supportedTransTypeList")
             private List<String> supported_trans_type_list;
 
             public String getPay_method_id() {

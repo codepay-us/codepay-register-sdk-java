@@ -3,16 +3,16 @@ package com.codepay.register.sdk.sp.serialport;
 import cn.hutool.cache.impl.FIFOCache;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.codepay.register.sdk.ECRHubConfig;
 import com.codepay.register.sdk.exception.ECRHubConnectionException;
 import com.codepay.register.sdk.exception.ECRHubException;
 import com.codepay.register.sdk.exception.ECRHubTimeoutException;
-import com.codepay.register.sdk.protobuf.ECRHubResponseProto;
 import com.codepay.register.sdk.utils.HexUtil;
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
-import com.codepay.register.sdk.protobuf.ECRHubProtobufHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -439,16 +439,16 @@ public class SerialPortEngine {
             if (data == null || data.length == 0) {
                 return;
             }
-            ECRHubResponseProto.ECRHubResponse response = null;
+            JSONObject response = null;
             try {
-                response = ECRHubProtobufHelper.parseRespFrom(data);
+                response = JSON.parseObject(data);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
             if (response == null) {
                 return;
             }
-            String requestId = response.getRequestId();
+            String requestId = response.getString("request_id");
             if (StrUtil.isNotBlank(requestId) && !requestId.equals(lastReceivedRequestId)) {
                 lastReceivedRequestId = requestId;
                 msgCache.put(requestId, message);

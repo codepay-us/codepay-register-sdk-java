@@ -40,17 +40,6 @@
       <artifactId>hutool-all</artifactId>
       <version>5.8.21</version>
     </dependency>
-    <!-- protobuf -->
-    <dependency>
-      <groupId>com.google.protobuf</groupId>
-      <artifactId>protobuf-java</artifactId>
-      <version>3.24.3</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.protobuf</groupId>
-      <artifactId>protobuf-java-util</artifactId>
-      <version>3.24.3</version>
-    </dependency>
     <!-- slf4j-api -->
     <dependency>
       <groupId>org.slf4j</groupId>

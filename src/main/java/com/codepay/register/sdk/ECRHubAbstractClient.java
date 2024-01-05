@@ -1,22 +1,15 @@
 package com.codepay.register.sdk;
 
 import cn.hutool.core.thread.ThreadUtil;
-import cn.hutool.core.util.IdUtil;
+import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.codepay.register.sdk.enums.EResponseCode;
-import com.codepay.register.sdk.enums.ETopic;
-import com.codepay.register.sdk.exception.ECRHubConnectionException;
 import com.codepay.register.sdk.exception.ECRHubException;
 import com.codepay.register.sdk.exception.ECRHubTimeoutException;
 import com.codepay.register.sdk.model.request.ECRHubRequest;
 import com.codepay.register.sdk.model.response.ECRHubResponse;
-import com.codepay.register.sdk.model.response.ECRHubResponse.DeviceData;
-import com.codepay.register.sdk.protobuf.ECRHubProtobufHelper;
-import com.codepay.register.sdk.protobuf.ECRHubRequestProto;
-import com.codepay.register.sdk.protobuf.ECRHubResponseProto;
-import com.codepay.register.sdk.utils.NetHelper;
 
-import java.util.Optional;
+import java.nio.charset.StandardCharsets;
 
 public abstract class ECRHubAbstractClient implements ECRHubClient {
 
@@ -71,62 +64,47 @@ public abstract class ECRHubAbstractClient implements ECRHubClient {
 
     protected abstract <T extends ECRHubResponse> T getResp(ECRHubRequest<T> request) throws ECRHubException;
 
-    protected abstract ECRHubResponseProto.ECRHubResponse send(ECRHubRequestProto.ECRHubRequest request, long startTime) throws ECRHubException;
+    protected byte[] pack(ECRHubRequest request) throws ECRHubException {
+        JSONObject bizData = JSON.parseObject(request.toString());
+        bizData.remove("topic");
+        bizData.remove("app_id");
+        bizData.remove("request_id");
+        bizData.remove("version");
+        bizData.remove("timestamp");
+        bizData.remove("config");
 
-    protected ECRHubResponse pair(long startTime) throws ECRHubException {
-        ECRHubResponseProto.ECRHubResponse resp = send(buildPairReq(), startTime);
-        ECRHubResponse response = buildResp(ECRHubResponse.class, resp);
-        if (!EResponseCode.SUCCESS.getCode().equals(response.getResponse_code())) {
-            throw new ECRHubConnectionException("["+response.getResponse_code()+"]" + response.getResponse_msg());
-        }
-        return response;
+        JSONObject pack = new JSONObject();
+        pack.put("topic", request.getTopic());
+        pack.put("app_id", request.getApp_id());
+        pack.put("request_id", request.getRequest_id());
+        pack.put("version", request.getVersion());
+        pack.put("timestamp", request.getTimestamp());
+        pack.put("biz_data", bizData);
+        return pack.toString().getBytes(StandardCharsets.UTF_8);
     }
 
-    protected ECRHubRequestProto.ECRHubRequest buildPairReq() {
-        String hostName = Optional.ofNullable(config.getHostName()).orElse(NetHelper.getLocalHostName());
-        String aliasName = Optional.ofNullable(config.getAliasName()).orElse(hostName);
-        String macAddress = NetHelper.getLocalMacAddress();
-
-        return ECRHubRequestProto.ECRHubRequest.newBuilder()
-              .setTimestamp(String.valueOf(System.currentTimeMillis()))
-              .setRequestId(IdUtil.fastSimpleUUID())
-              .setTopic(ETopic.PAIR.getVal())
-              .setDeviceData(ECRHubRequestProto.RequestDeviceData.newBuilder()
-                            .setDeviceName(hostName)
-                            .setAliasName(aliasName)
-                            .setMacAddress(macAddress)
-                            .build())
-              .build();
-    }
-
-    protected <T extends ECRHubResponse> T buildResp(Class<T> respClass, byte[] respBuffer) throws ECRHubException {
+    protected <T extends ECRHubResponse> T unpack(Class<T> respClass, byte[] respBuffer) throws ECRHubException {
         if (respBuffer != null) {
-            ECRHubResponseProto.ECRHubResponse resp = ECRHubProtobufHelper.parseRespFrom(respBuffer);
-            return buildResp(respClass, resp);
+            return unpack(respClass, JSON.parseObject(respBuffer));
         } else {
             return null;
         }
     }
 
-    protected <T extends ECRHubResponse> T buildResp(Class<T> respClass, ECRHubResponseProto.ECRHubResponse resp) throws ECRHubException {
-        if (EResponseCode.TIMEOUT.getCode().equals(resp.getResponseCode())) {
-            throw new ECRHubTimeoutException(resp.getResponseMsg());
+    protected <T extends ECRHubResponse> T unpack(Class<T> respClass, JSONObject respJson) throws ECRHubException {
+        String respCode = respJson.getString("response_code");
+        String respMsg = respJson.getString("response_msg");
+        if (EResponseCode.TIMEOUT.getCode().equals(respCode)) {
+            throw new ECRHubTimeoutException(respMsg);
         }
 
-        DeviceData deviceData = null;
-        if (resp.hasDeviceData()) {
-            JSONObject json = ECRHubProtobufHelper.toJson(resp.getDeviceData());
-            deviceData = json.toJavaObject(DeviceData.class);
-        }
-
-        ECRHubResponseProto.ResponseBizData respBizData = resp.getBizData();
-        JSONObject respDataJson = ECRHubProtobufHelper.toJson(respBizData);
-
-        T response = respDataJson.toJavaObject(respClass);
-        response.setRequest_id(resp.getRequestId());
-        response.setResponse_code(resp.getResponseCode());
-        response.setResponse_msg(resp.getResponseMsg());
-        response.setDevice_data(deviceData);
+        JSONObject bizData = respJson.getJSONObject("biz_data");
+        T response = bizData.toJavaObject(respClass);
+        response.setTopic(respJson.getString("topic"));
+        response.setApp_id(respJson.getString("app_id"));
+        response.setRequest_id(respJson.getString("request_id"));
+        response.setResponse_code(respCode);
+        response.setResponse_msg(respMsg);
         return response;
     }
 }

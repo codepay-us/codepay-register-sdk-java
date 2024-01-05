@@ -1,6 +1,5 @@
 package com.codepay.register.sdk.model.request;
 
-import com.alibaba.fastjson2.annotation.JSONField;
 import com.codepay.register.sdk.enums.ETopic;
 import com.codepay.register.sdk.model.response.QueryResponse;
 
@@ -17,7 +16,6 @@ public class QueryRequest extends ECRHubRequest<QueryResponse> {
      *
      * For example: 1217752501201407033233368018
      */
-    @JSONField(name = "merchantOrderNo")
     private String merchant_order_no;
 
     public String getMerchant_order_no() {

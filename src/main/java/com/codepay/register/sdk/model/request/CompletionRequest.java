@@ -1,16 +1,25 @@
-package com.codepay.register.sdk.model.response;
+package com.codepay.register.sdk.model.request;
+
+import com.codepay.register.sdk.enums.ETopic;
+import com.codepay.register.sdk.enums.ETransType;
+import com.codepay.register.sdk.model.response.CompletionResponse;
 
 import java.util.Map;
 
-public class RefundResponse extends ECRHubResponse {
+public class CompletionRequest extends ECRHubRequest<CompletionResponse> {
+
+    @Override
+    public String getTopic() {
+        return ETopic.PAY_ORDER.getVal();
+    }
     /**
      * Transaction type
      *
-     * @see com.codepay.register.sdk.enums.ETransType
+     * @see ETransType
      *
-     * For example: 1
+     * For example: 3
      */
-    private String trans_type;
+    private String trans_type = ETransType.COMPLETION.getCode();
     /**
      * Merchant order No.
      * The order number for the refund request when refunded, different from the order number of the original consumer transaction. No more than 32 alphanumeric characters.
@@ -25,6 +34,12 @@ public class RefundResponse extends ECRHubResponse {
      * For example: 1217752501201407033233368017
      */
     private String orig_merchant_order_no;
+    /**
+     * Payment Channel Transaction No. such as WeChat, Alipay, Visa, Mastercard and other payment platforms
+     *
+     * For example: 4210001022202106045676702818
+     */
+    private String orig_pay_channel_trans_no;
     /**
      * Price Currency, ISO-4217 compliant, described in a three-character code
      *
@@ -46,12 +61,11 @@ public class RefundResponse extends ECRHubResponse {
      */
     private String tip_amount;
     /**
-     * Cashback Amount
-     * The amount of the tip is expressed in the currency in which it is denominated, for example, 1 USD stands for one dollar, not one cent.
+     * Whether or not to enter tips on the CodePay Register page, default is false
      *
-     * For example: 1.00
+     * Example: true
      */
-    private String cashback_amount;
+    private boolean on_screen_tip;
     /**
      * Payment Methods Category
      *
@@ -69,6 +83,12 @@ public class RefundResponse extends ECRHubResponse {
      */
     private String pay_method_id;
     /**
+     * Type of bank card
+     *
+     * For example: Visa
+     */
+    private String card_type;
+    /**
      * Attach
      * Allows merchants to submit an additional data to the gateway, which will be returned as-is for payment notifications and inquiries
      *
@@ -76,43 +96,25 @@ public class RefundResponse extends ECRHubResponse {
      */
     private String attach;
     /**
-     * Transaction status
+     * Order description
+     * A brief description of the goods or services purchased by the customer
      *
-     * @see com.codepay.register.sdk.enums.ETransStatus
-     *
-     * For example: 2
+     * For example: IPhone White X2
      */
-    private String trans_status;
+    private String description;
     /**
-     * PayCloud transaction No.
+     * PayCloud backend server callback address after successful payment
+     * Receive payment notifications from the gateway to call back the server address, and only when the transaction goes through the payment gateway will there be a callback.
      *
-     * For example: 51230016492309010000001
+     * For example: http://www.xxx.com/notify
      */
-    private String trans_no;
+    private String notify_url;
     /**
-     * Payment Channel Transaction No. such as WeChat, Alipay, Visa, Mastercard and other payment platforms
+     * Order expires time, in seconds. Default to 300 seconds.
      *
-     * For example: 4210001022202106045676702818
+     * For example: 300
      */
-    private String pay_channel_trans_no;
-    /**
-     * Merchant discount amount
-     *
-     * For example: 10.00
-     */
-    private String discount_bmopc;
-    /**
-     * Payment Channel discount amount
-     *
-     * For example: 6.00
-     */
-    private String discount_bpc;
-    /**
-     * Time of successful trade, format: YYYY-MM-DD HH:mm:ss
-     *
-     * For Example: 2021-06-03 12:48:51
-     */
-    private String trans_end_time;
+    private String expires;
     /**
      * Extended parameters
      */
@@ -142,6 +144,14 @@ public class RefundResponse extends ECRHubResponse {
         this.orig_merchant_order_no = orig_merchant_order_no;
     }
 
+    public String getOrig_pay_channel_trans_no() {
+        return orig_pay_channel_trans_no;
+    }
+
+    public void setOrig_pay_channel_trans_no(String orig_pay_channel_trans_no) {
+        this.orig_pay_channel_trans_no = orig_pay_channel_trans_no;
+    }
+
     public String getPrice_currency() {
         return price_currency;
     }
@@ -166,12 +176,12 @@ public class RefundResponse extends ECRHubResponse {
         this.tip_amount = tip_amount;
     }
 
-    public String getCashback_amount() {
-        return cashback_amount;
+    public boolean isOn_screen_tip() {
+        return on_screen_tip;
     }
 
-    public void setCashback_amount(String cashback_amount) {
-        this.cashback_amount = cashback_amount;
+    public void setOn_screen_tip(boolean on_screen_tip) {
+        this.on_screen_tip = on_screen_tip;
     }
 
     public String getPay_scenario() {
@@ -190,6 +200,14 @@ public class RefundResponse extends ECRHubResponse {
         this.pay_method_id = pay_method_id;
     }
 
+    public String getCard_type() {
+        return card_type;
+    }
+
+    public void setCard_type(String card_type) {
+        this.card_type = card_type;
+    }
+
     public String getAttach() {
         return attach;
     }
@@ -198,52 +216,28 @@ public class RefundResponse extends ECRHubResponse {
         this.attach = attach;
     }
 
-    public String getTrans_status() {
-        return trans_status;
+    public String getDescription() {
+        return description;
     }
 
-    public void setTrans_status(String trans_status) {
-        this.trans_status = trans_status;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getTrans_no() {
-        return trans_no;
+    public String getNotify_url() {
+        return notify_url;
     }
 
-    public void setTrans_no(String trans_no) {
-        this.trans_no = trans_no;
+    public void setNotify_url(String notify_url) {
+        this.notify_url = notify_url;
     }
 
-    public String getPay_channel_trans_no() {
-        return pay_channel_trans_no;
+    public String getExpires() {
+        return expires;
     }
 
-    public void setPay_channel_trans_no(String pay_channel_trans_no) {
-        this.pay_channel_trans_no = pay_channel_trans_no;
-    }
-
-    public String getDiscount_bmopc() {
-        return discount_bmopc;
-    }
-
-    public void setDiscount_bmopc(String discount_bmopc) {
-        this.discount_bmopc = discount_bmopc;
-    }
-
-    public String getDiscount_bpc() {
-        return discount_bpc;
-    }
-
-    public void setDiscount_bpc(String discount_bpc) {
-        this.discount_bpc = discount_bpc;
-    }
-
-    public String getTrans_end_time() {
-        return trans_end_time;
-    }
-
-    public void setTrans_end_time(String trans_end_time) {
-        this.trans_end_time = trans_end_time;
+    public void setExpires(String expires) {
+        this.expires = expires;
     }
 
     public Map<String, String> getExtends_params() {

@@ -1,31 +1,37 @@
 package com.codepay.register.sdk.model.request;
 
-import com.alibaba.fastjson2.annotation.JSONField;
 import com.codepay.register.sdk.enums.ETopic;
 import com.codepay.register.sdk.enums.ETransType;
-import com.codepay.register.sdk.model.response.PurchaseResponse;
+import com.codepay.register.sdk.model.response.AuthResponse;
 
-public class PurchaseRequest extends ECRHubRequest<PurchaseResponse> {
+import java.util.Map;
+
+public class AuthRequest extends ECRHubRequest<AuthResponse> {
 
     @Override
     public String getTopic() {
         return ETopic.PAY_ORDER.getVal();
     }
-
+    /**
+     * Transaction type
+     *
+     * @see ETransType
+     *
+     * For example: 4
+     */
+    private String trans_type = ETransType.AUTHORIZATION.getCode();
     /**
      * Merchant order No.
      * The order number for the refund request when refunded, different from the order number of the original consumer transaction. No more than 32 alphanumeric characters.
      *
      * For example: 1217752501201407033233368018
      */
-    @JSONField(name = "merchantOrderNo")
     private String merchant_order_no;
     /**
      * Price Currency, ISO-4217 compliant, described in a three-character code
      *
      * For example: USD
      */
-    @JSONField(name = "priceCurrency")
     private String price_currency;
     /**
      * Order Amount
@@ -33,7 +39,6 @@ public class PurchaseRequest extends ECRHubRequest<PurchaseResponse> {
      *
      * For example: 34.50
      */
-    @JSONField(name = "orderAmount")
     private String order_amount;
     /**
      * Tip Amount
@@ -41,50 +46,41 @@ public class PurchaseRequest extends ECRHubRequest<PurchaseResponse> {
      *
      * For example: 1.50
      */
-    @JSONField(name = "tipAmount")
     private String tip_amount;
     /**
-     * Cashback Amount
-     * The amount of the tip is expressed in the currency in which it is denominated, for example, 1 USD stands for one dollar, not one cent.
+     * Whether or not to enter tips on the CodePay Register page, default is false
      *
-     * For example: 1.00
+     * Example: true
      */
-    @JSONField(name = "cashbackAmount")
-    private String cashback_amount;
+    private boolean on_screen_tip;
     /**
-     * Transaction type
+     * Payment scene
      *
-     * @see ETransType
-     *
-     * For example: 1
-     */
-    @JSONField(name = "transType")
-    private String trans_type = ETransType.PURCHASE.getCode();
-    /**
-     * Payment Methods Category
-     *
-     * @see com.wiseasy.ecr.hub.sdk.enums.EPayMethodCategory
+     * @see com.codepay.register.sdk.enums.EPayScenario
      *
      * For example: BANKCARD
      */
-    @JSONField(name = "payMethodCategory")
-    private String pay_method_category;
+    private String pay_scenario;
     /**
      * Payment method id
      *
-     * @see com.wiseasy.ecr.hub.sdk.enums.EPayMethod
+     * @see com.codepay.register.sdk.enums.EPayMethod
      *
      * For example: Visa
      */
-    @JSONField(name = "payMethodId")
     private String pay_method_id;
+    /**
+     * Type of bank card
+     *
+     * For example: Visa
+     */
+    private String card_type;
     /**
      * Attach
      * Allows merchants to submit an additional data to the gateway, which will be returned as-is for payment notifications and inquiries
      *
      * For example: abc
      */
-    @JSONField(name = "attach")
     private String attach;
     /**
      * Order description
@@ -92,7 +88,6 @@ public class PurchaseRequest extends ECRHubRequest<PurchaseResponse> {
      *
      * For example: IPhone White X2
      */
-    @JSONField(name = "description")
     private String description;
     /**
      * PayCloud backend server callback address after successful payment
@@ -100,24 +95,25 @@ public class PurchaseRequest extends ECRHubRequest<PurchaseResponse> {
      *
      * For example: http://www.xxx.com/notify
      */
-    @JSONField(name = "notifyUrl")
     private String notify_url;
     /**
      * Order expires time, in seconds. Default to 300 seconds.
      *
      * For example: 300
      */
-    @JSONField(name = "expires")
     private String expires;
     /**
-     * Order need terminal confirmation. Default: true
-     * - true: Terminal confirmation is required;
-     * - false: No terminal confirmation is required.
-     *
-     * For example: true
+     * Extended parameters
      */
-    @JSONField(name = "confirmOnTerminal")
-    private Boolean confirm_on_terminal;
+    private Map<String, String> extends_params;
+
+    public String getTrans_type() {
+        return trans_type;
+    }
+
+    public void setTrans_type(String trans_type) {
+        this.trans_type = trans_type;
+    }
 
     public String getMerchant_order_no() {
         return merchant_order_no;
@@ -151,28 +147,20 @@ public class PurchaseRequest extends ECRHubRequest<PurchaseResponse> {
         this.tip_amount = tip_amount;
     }
 
-    public String getCashback_amount() {
-        return cashback_amount;
+    public boolean isOn_screen_tip() {
+        return on_screen_tip;
     }
 
-    public void setCashback_amount(String cashback_amount) {
-        this.cashback_amount = cashback_amount;
+    public void setOn_screen_tip(boolean on_screen_tip) {
+        this.on_screen_tip = on_screen_tip;
     }
 
-    public String getTrans_type() {
-        return trans_type;
+    public String getPay_scenario() {
+        return pay_scenario;
     }
 
-    public void setTrans_type(String trans_type) {
-        this.trans_type = trans_type;
-    }
-
-    public String getPay_method_category() {
-        return pay_method_category;
-    }
-
-    public void setPay_method_category(String pay_method_category) {
-        this.pay_method_category = pay_method_category;
+    public void setPay_scenario(String pay_scenario) {
+        this.pay_scenario = pay_scenario;
     }
 
     public String getPay_method_id() {
@@ -181,6 +169,14 @@ public class PurchaseRequest extends ECRHubRequest<PurchaseResponse> {
 
     public void setPay_method_id(String pay_method_id) {
         this.pay_method_id = pay_method_id;
+    }
+
+    public String getCard_type() {
+        return card_type;
+    }
+
+    public void setCard_type(String card_type) {
+        this.card_type = card_type;
     }
 
     public String getAttach() {
@@ -215,11 +211,11 @@ public class PurchaseRequest extends ECRHubRequest<PurchaseResponse> {
         this.expires = expires;
     }
 
-    public Boolean getConfirm_on_terminal() {
-        return confirm_on_terminal;
+    public Map<String, String> getExtends_params() {
+        return extends_params;
     }
 
-    public void setConfirm_on_terminal(Boolean confirm_on_terminal) {
-        this.confirm_on_terminal = confirm_on_terminal;
+    public void setExtends_params(Map<String, String> extends_params) {
+        this.extends_params = extends_params;
     }
 }

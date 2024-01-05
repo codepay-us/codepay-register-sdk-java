@@ -2,7 +2,7 @@ package com.codepay.register.sdk.model.response;
 
 import java.util.Map;
 
-public class RefundResponse extends ECRHubResponse {
+public class VoidResponse extends ECRHubResponse {
     /**
      * Transaction type
      *
@@ -25,6 +25,12 @@ public class RefundResponse extends ECRHubResponse {
      * For example: 1217752501201407033233368017
      */
     private String orig_merchant_order_no;
+    /**
+     * Payment Channel Transaction No. such as WeChat, Alipay, Visa, Mastercard and other payment platforms
+     *
+     * For example: 4210001022202106045676702818
+     */
+    private String orig_pay_channel_trans_no;
     /**
      * Price Currency, ISO-4217 compliant, described in a three-character code
      *
@@ -53,11 +59,9 @@ public class RefundResponse extends ECRHubResponse {
      */
     private String cashback_amount;
     /**
-     * Payment Methods Category
+     * Payment scenario
      *
      * @see com.codepay.register.sdk.enums.EPayScenario
-     *
-     * For example: BANKCARD
      */
     private String pay_scenario;
     /**
@@ -134,14 +138,6 @@ public class RefundResponse extends ECRHubResponse {
         this.merchant_order_no = merchant_order_no;
     }
 
-    public String getOrig_merchant_order_no() {
-        return orig_merchant_order_no;
-    }
-
-    public void setOrig_merchant_order_no(String orig_merchant_order_no) {
-        this.orig_merchant_order_no = orig_merchant_order_no;
-    }
-
     public String getPrice_currency() {
         return price_currency;
     }
@@ -164,14 +160,6 @@ public class RefundResponse extends ECRHubResponse {
 
     public void setTip_amount(String tip_amount) {
         this.tip_amount = tip_amount;
-    }
-
-    public String getCashback_amount() {
-        return cashback_amount;
-    }
-
-    public void setCashback_amount(String cashback_amount) {
-        this.cashback_amount = cashback_amount;
     }
 
     public String getPay_scenario() {

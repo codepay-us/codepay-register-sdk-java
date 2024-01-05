@@ -2,7 +2,7 @@ package com.codepay.register.sdk.model.response;
 
 import java.util.Map;
 
-public class RefundResponse extends ECRHubResponse {
+public class SaleWithCashbackResponse extends ECRHubResponse {
     /**
      * Transaction type
      *
@@ -19,13 +19,6 @@ public class RefundResponse extends ECRHubResponse {
      */
     private String merchant_order_no;
     /**
-     * Original Merchant Order No.
-     * Required, if the transaction type is Cancellation, Refund and Pre-Authorization Cancellation, Pre-Authorization Completion.
-     *
-     * For example: 1217752501201407033233368017
-     */
-    private String orig_merchant_order_no;
-    /**
      * Price Currency, ISO-4217 compliant, described in a three-character code
      *
      * For example: USD
@@ -39,25 +32,15 @@ public class RefundResponse extends ECRHubResponse {
      */
     private String order_amount;
     /**
-     * Tip Amount
-     * The amount of the tip is expressed in the currency in which it is denominated, for example, 1 USD stands for one dollar, not one cent.
+     * Cashback amount. Expressed in the quoted currency, for example, One USD stands for one dollar, not one cent
      *
      * For example: 1.50
      */
-    private String tip_amount;
-    /**
-     * Cashback Amount
-     * The amount of the tip is expressed in the currency in which it is denominated, for example, 1 USD stands for one dollar, not one cent.
-     *
-     * For example: 1.00
-     */
     private String cashback_amount;
     /**
-     * Payment Methods Category
+     * Payment scenario
      *
      * @see com.codepay.register.sdk.enums.EPayScenario
-     *
-     * For example: BANKCARD
      */
     private String pay_scenario;
     /**
@@ -134,14 +117,6 @@ public class RefundResponse extends ECRHubResponse {
         this.merchant_order_no = merchant_order_no;
     }
 
-    public String getOrig_merchant_order_no() {
-        return orig_merchant_order_no;
-    }
-
-    public void setOrig_merchant_order_no(String orig_merchant_order_no) {
-        this.orig_merchant_order_no = orig_merchant_order_no;
-    }
-
     public String getPrice_currency() {
         return price_currency;
     }
@@ -156,14 +131,6 @@ public class RefundResponse extends ECRHubResponse {
 
     public void setOrder_amount(String order_amount) {
         this.order_amount = order_amount;
-    }
-
-    public String getTip_amount() {
-        return tip_amount;
-    }
-
-    public void setTip_amount(String tip_amount) {
-        this.tip_amount = tip_amount;
     }
 
     public String getCashback_amount() {

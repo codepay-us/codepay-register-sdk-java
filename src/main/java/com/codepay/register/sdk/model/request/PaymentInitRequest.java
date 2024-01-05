@@ -1,6 +1,5 @@
 package com.codepay.register.sdk.model.request;
 
-import com.alibaba.fastjson2.annotation.JSONField;
 import com.codepay.register.sdk.enums.ETopic;
 import com.codepay.register.sdk.model.response.PaymentInitResponse;
 
@@ -22,7 +21,6 @@ public class PaymentInitRequest extends ECRHubRequest<PaymentInitResponse> {
      *
      * Example: false
      */
-    @JSONField(name = "confirmOnTerminal")
     private Boolean confirm_on_terminal;
     /**
      * Order queue mode, which sets the sorting rules for orders. When pushing multiple orders, priority is given to new or old orders.
@@ -35,7 +33,6 @@ public class PaymentInitRequest extends ECRHubRequest<PaymentInitResponse> {
      *
      * Example: FIFO
      */
-    @JSONField(name = "orderQueueMode")
     private String order_queue_mode;
     /**
      * Whether transactions are automatically batch settlement.
@@ -48,7 +45,6 @@ public class PaymentInitRequest extends ECRHubRequest<PaymentInitResponse> {
      *
      * Example: true
      */
-    @JSONField(name = "isAutoSettlement")
     private Boolean is_auto_settlement;
 
     public Boolean getConfirm_on_terminal() {

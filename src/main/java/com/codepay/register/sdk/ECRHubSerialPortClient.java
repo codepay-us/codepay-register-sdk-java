@@ -4,9 +4,6 @@ import com.codepay.register.sdk.exception.ECRHubConnectionException;
 import com.codepay.register.sdk.exception.ECRHubException;
 import com.codepay.register.sdk.model.request.ECRHubRequest;
 import com.codepay.register.sdk.model.response.ECRHubResponse;
-import com.codepay.register.sdk.protobuf.ECRHubProtobufHelper;
-import com.codepay.register.sdk.protobuf.ECRHubRequestProto;
-import com.codepay.register.sdk.protobuf.ECRHubResponseProto;
 import com.codepay.register.sdk.sp.serialport.SerialPortEngine;
 
 import java.util.Optional;
@@ -25,13 +22,6 @@ public class ECRHubSerialPortClient extends ECRHubAbstractClient {
         long startTime = System.currentTimeMillis();
         engine.connect(startTime);
         return true;
-    }
-
-    @Override
-    public ECRHubResponse connect2() throws ECRHubException {
-        long startTime = System.currentTimeMillis();
-        engine.connect(startTime);
-        return pair(startTime);
     }
 
     @Override
@@ -66,21 +56,11 @@ public class ECRHubSerialPortClient extends ECRHubAbstractClient {
     }
 
     @Override
-    protected ECRHubResponseProto.ECRHubResponse send(ECRHubRequestProto.ECRHubRequest request, long startTime) throws ECRHubException {
-        long timeout = getConfig().getSerialPortConfig().getConnTimeout();
-
-        engine.write(request.toByteArray(), startTime, timeout);
-
-        byte[] buffer = engine.read(request.getRequestId(), startTime, timeout);
-        return ECRHubProtobufHelper.parseRespFrom(buffer);
-    }
-
-    @Override
     protected <T extends ECRHubResponse> void sendReq(ECRHubRequest<T> request) throws ECRHubException {
         ECRHubConfig config = Optional.ofNullable(request.getConfig()).orElse(super.getConfig());
         long timeout = config.getSerialPortConfig().getWriteTimeout();
 
-        byte[] buffer = ECRHubProtobufHelper.pack(request);
+        byte[] buffer = pack(request);
         engine.write(buffer, System.currentTimeMillis(), timeout);
     }
 
@@ -90,6 +70,6 @@ public class ECRHubSerialPortClient extends ECRHubAbstractClient {
         long timeout = config.getSerialPortConfig().getReadTimeout();
 
         byte[] buffer = engine.read(request.getRequest_id(), System.currentTimeMillis(), timeout);
-        return buildResp(request.getResponseClass(), buffer);
+        return unpack(request.getResponseClass(), buffer);
     }
 }

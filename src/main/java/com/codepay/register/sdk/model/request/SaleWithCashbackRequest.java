@@ -2,11 +2,11 @@ package com.codepay.register.sdk.model.request;
 
 import com.codepay.register.sdk.enums.ETopic;
 import com.codepay.register.sdk.enums.ETransType;
-import com.codepay.register.sdk.model.response.RefundResponse;
+import com.codepay.register.sdk.model.response.SaleWithCashbackResponse;
 
 import java.util.Map;
 
-public class RefundRequest extends ECRHubRequest<RefundResponse> {
+public class SaleWithCashbackRequest extends ECRHubRequest<SaleWithCashbackResponse> {
 
     @Override
     public String getTopic() {
@@ -17,9 +17,9 @@ public class RefundRequest extends ECRHubRequest<RefundResponse> {
      *
      * @see ETransType
      *
-     * For example: 3
+     * For example: 11
      */
-    private String trans_type = ETransType.REFUND.getCode();
+    private String trans_type = ETransType.CASH_BACK.getCode();
     /**
      * Merchant order No.
      * The order number for the refund request when refunded, different from the order number of the original consumer transaction. No more than 32 alphanumeric characters.
@@ -27,19 +27,6 @@ public class RefundRequest extends ECRHubRequest<RefundResponse> {
      * For example: 1217752501201407033233368018
      */
     private String merchant_order_no;
-    /**
-     * Original Merchant Order No.
-     * Required, if the transaction type is Cancellation, Refund and Pre-Authorization Cancellation, Pre-Authorization Completion.
-     *
-     * For example: 1217752501201407033233368017
-     */
-    private String orig_merchant_order_no;
-    /**
-     * Payment Channel Transaction No. such as WeChat, Alipay, Visa, Mastercard and other payment platforms
-     *
-     * For example: 4210001022202106045676702818
-     */
-    private String orig_pay_channel_trans_no;
     /**
      * Price Currency, ISO-4217 compliant, described in a three-character code
      *
@@ -54,27 +41,13 @@ public class RefundRequest extends ECRHubRequest<RefundResponse> {
      */
     private String order_amount;
     /**
-     * Tip Amount
-     * The amount of the tip is expressed in the currency in which it is denominated, for example, 1 USD stands for one dollar, not one cent.
+     * Cashback amount. Expressed in the quoted currency, for example, One USD stands for one dollar, not one cent
      *
      * For example: 1.50
      */
-    private String tip_amount;
-    /**
-     * Whether or not to enter tips on the CodePay Register page, default is false
-     *
-     * Example: true
-     */
-    private boolean on_screen_tip;
-    /**
-     * Cashback Amount
-     * The amount of the tip is expressed in the currency in which it is denominated, for example, 1 USD stands for one dollar, not one cent.
-     *
-     * For example: 1.00
-     */
     private String cashback_amount;
     /**
-     * Payment Methods Category
+     * Payment scene
      *
      * @see com.codepay.register.sdk.enums.EPayScenario
      *
@@ -143,22 +116,6 @@ public class RefundRequest extends ECRHubRequest<RefundResponse> {
         this.merchant_order_no = merchant_order_no;
     }
 
-    public String getOrig_merchant_order_no() {
-        return orig_merchant_order_no;
-    }
-
-    public void setOrig_merchant_order_no(String orig_merchant_order_no) {
-        this.orig_merchant_order_no = orig_merchant_order_no;
-    }
-
-    public String getOrig_pay_channel_trans_no() {
-        return orig_pay_channel_trans_no;
-    }
-
-    public void setOrig_pay_channel_trans_no(String orig_pay_channel_trans_no) {
-        this.orig_pay_channel_trans_no = orig_pay_channel_trans_no;
-    }
-
     public String getPrice_currency() {
         return price_currency;
     }
@@ -173,22 +130,6 @@ public class RefundRequest extends ECRHubRequest<RefundResponse> {
 
     public void setOrder_amount(String order_amount) {
         this.order_amount = order_amount;
-    }
-
-    public String getTip_amount() {
-        return tip_amount;
-    }
-
-    public void setTip_amount(String tip_amount) {
-        this.tip_amount = tip_amount;
-    }
-
-    public boolean isOn_screen_tip() {
-        return on_screen_tip;
-    }
-
-    public void setOn_screen_tip(boolean on_screen_tip) {
-        this.on_screen_tip = on_screen_tip;
     }
 
     public String getCashback_amount() {

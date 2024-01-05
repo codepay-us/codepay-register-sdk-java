@@ -2,7 +2,7 @@ package com.codepay.register.sdk.model.response;
 
 import java.util.Map;
 
-public class RefundResponse extends ECRHubResponse {
+public class CompletionResponse extends ECRHubResponse {
     /**
      * Transaction type
      *
@@ -45,13 +45,6 @@ public class RefundResponse extends ECRHubResponse {
      * For example: 1.50
      */
     private String tip_amount;
-    /**
-     * Cashback Amount
-     * The amount of the tip is expressed in the currency in which it is denominated, for example, 1 USD stands for one dollar, not one cent.
-     *
-     * For example: 1.00
-     */
-    private String cashback_amount;
     /**
      * Payment Methods Category
      *
@@ -164,14 +157,6 @@ public class RefundResponse extends ECRHubResponse {
 
     public void setTip_amount(String tip_amount) {
         this.tip_amount = tip_amount;
-    }
-
-    public String getCashback_amount() {
-        return cashback_amount;
-    }
-
-    public void setCashback_amount(String cashback_amount) {
-        this.cashback_amount = cashback_amount;
     }
 
     public String getPay_scenario() {
