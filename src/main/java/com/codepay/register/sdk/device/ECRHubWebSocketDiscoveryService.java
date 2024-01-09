@@ -233,18 +233,19 @@ public class ECRHubWebSocketDiscoveryService implements WebSocketClientListener,
 
     @Override
     public void onMessage(WebSocket conn, ByteBuffer message) {
-        JSONObject req = null;
+        JSONObject req;
         try {
             req = JSON.parseObject(message.array());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
+        JSONObject deviceData = req.getJSONObject("device_data");
         ECRHubDevice device = new ECRHubDevice();
-        device.setMac_address(req.getString("mac_address"));
-        device.setIp_address(req.getString("ip_address"));
-        device.setTerminal_sn(req.getString("device_name"));
-        device.setWs_address(buildWSAddress(req.getString("ip_address"), Integer.parseInt(req.getString("port"))));
+        device.setMac_address(deviceData.getString("mac_address"));
+        device.setIp_address(deviceData.getString("ip_address"));
+        device.setTerminal_sn(deviceData.getString("device_name"));
+        device.setWs_address(buildWSAddress(deviceData.getString("ip_address"), Integer.parseInt(deviceData.getString("port"))));
 
         String topic = req.getString("topic");
         if (ETopic.PAIR.getVal().equals(topic)) {
