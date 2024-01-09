@@ -156,7 +156,7 @@ Select a paired terminal to initiate a network connection, and once the connecti
 #### 4.2.2 Create client instance
 
 **WLAN connection mode**
-When a POS application connects to a POS terminal using WLAN, use the following method to create a client
+> When a POS application connects to a POS terminal using WLAN, use the following method to create a client
 
 ```java
 import com.codepay.register.sdk.ECRHubClient;
@@ -175,7 +175,7 @@ ECRHubClient client = ECRHubClientFactory.create("ws://xxxxxx", config);
 ```
 
 **USB connection mode**
-When a POS application connects to a POS terminal using a USB cable, use the following method to create a client
+> When a POS application connects to a POS terminal using a USB cable, use the following method to create a client
 
 ```java
 import com.codepay.register.sdk.ECRHubClient;
