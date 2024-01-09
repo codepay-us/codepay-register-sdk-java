@@ -65,7 +65,7 @@ public class RefundRequest extends ECRHubRequest<RefundResponse> {
      *
      * Example: true
      */
-    private boolean on_screen_tip;
+    private Boolean on_screen_tip;
     /**
      * Cashback Amount
      * The amount of the tip is expressed in the currency in which it is denominated, for example, 1 USD stands for one dollar, not one cent.
@@ -122,6 +122,28 @@ public class RefundRequest extends ECRHubRequest<RefundResponse> {
      * For example: 300
      */
     private String expires;
+    /**
+     * This parameter controls the display logic of electronic signatures:
+     * true: Display the electronic signature page and print the signature information on the purchase order
+     * false: The electronic signature page will not be displayed, but the signature area needs to be printed on the purchase order
+     * But even if this parameter is set, CodePay Register still processes electronic signatures according to the following logic in the following situations:
+     * Credit card network, APP does not display signature page, fixed on receipt to print signature column
+     *
+     * Pin debit transactions do not require a signature, the APP does not display a signature page, and the receipt is not printed either
+     */
+    private Boolean on_screen_signature;
+    /**
+     * Order need terminal confirmation. Default: true
+     * - true: Terminal confirmation is required;
+     * - false: No terminal confirmation is required.
+     *
+     * For example: true
+     */
+    private Boolean confirm_on_terminal;
+    /**
+     * When refund or void a transaction, does the store manager role need to authorize this operation on the terminal?
+     */
+    private Boolean required_terminal_authentication;
     /**
      * Extended parameters
      */
@@ -183,11 +205,11 @@ public class RefundRequest extends ECRHubRequest<RefundResponse> {
         this.tip_amount = tip_amount;
     }
 
-    public boolean isOn_screen_tip() {
+    public Boolean getOn_screen_tip() {
         return on_screen_tip;
     }
 
-    public void setOn_screen_tip(boolean on_screen_tip) {
+    public void setOn_screen_tip(Boolean on_screen_tip) {
         this.on_screen_tip = on_screen_tip;
     }
 
@@ -253,6 +275,30 @@ public class RefundRequest extends ECRHubRequest<RefundResponse> {
 
     public void setExpires(String expires) {
         this.expires = expires;
+    }
+
+    public Boolean getOn_screen_signature() {
+        return on_screen_signature;
+    }
+
+    public void setOn_screen_signature(Boolean on_screen_signature) {
+        this.on_screen_signature = on_screen_signature;
+    }
+
+    public Boolean getConfirm_on_terminal() {
+        return confirm_on_terminal;
+    }
+
+    public void setConfirm_on_terminal(Boolean confirm_on_terminal) {
+        this.confirm_on_terminal = confirm_on_terminal;
+    }
+
+    public Boolean getRequired_terminal_authentication() {
+        return required_terminal_authentication;
+    }
+
+    public void setRequired_terminal_authentication(Boolean required_terminal_authentication) {
+        this.required_terminal_authentication = required_terminal_authentication;
     }
 
     public Map<String, String> getExtends_params() {

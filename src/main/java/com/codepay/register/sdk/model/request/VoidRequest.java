@@ -68,6 +68,28 @@ public class VoidRequest extends ECRHubRequest<VoidResponse> {
      */
     private String expires;
     /**
+     * This parameter controls the display logic of electronic signatures:
+     * true: Display the electronic signature page and print the signature information on the purchase order
+     * false: The electronic signature page will not be displayed, but the signature area needs to be printed on the purchase order
+     * But even if this parameter is set, CodePay Register still processes electronic signatures according to the following logic in the following situations:
+     * Credit card network, APP does not display signature page, fixed on receipt to print signature column
+     *
+     * Pin debit transactions do not require a signature, the APP does not display a signature page, and the receipt is not printed either
+     */
+    private Boolean on_screen_signature;
+    /**
+     * Order need terminal confirmation. Default: true
+     * - true: Terminal confirmation is required;
+     * - false: No terminal confirmation is required.
+     *
+     * For example: true
+     */
+    private Boolean confirm_on_terminal;
+    /**
+     * When refund or void a transaction, does the store manager role need to authorize this operation on the terminal?
+     */
+    private Boolean required_terminal_authentication;
+    /**
      * Extended parameters
      */
     private Map<String, String> extends_params;
@@ -134,6 +156,30 @@ public class VoidRequest extends ECRHubRequest<VoidResponse> {
 
     public void setExpires(String expires) {
         this.expires = expires;
+    }
+
+    public Boolean getOn_screen_signature() {
+        return on_screen_signature;
+    }
+
+    public void setOn_screen_signature(Boolean on_screen_signature) {
+        this.on_screen_signature = on_screen_signature;
+    }
+
+    public Boolean getConfirm_on_terminal() {
+        return confirm_on_terminal;
+    }
+
+    public void setConfirm_on_terminal(Boolean confirm_on_terminal) {
+        this.confirm_on_terminal = confirm_on_terminal;
+    }
+
+    public Boolean getRequired_terminal_authentication() {
+        return required_terminal_authentication;
+    }
+
+    public void setRequired_terminal_authentication(Boolean required_terminal_authentication) {
+        this.required_terminal_authentication = required_terminal_authentication;
     }
 
     public Map<String, String> getExtends_params() {
