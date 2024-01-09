@@ -180,7 +180,7 @@ public class ECRHubWebSocketDiscoveryService implements WebSocketClientListener,
             // The default wait is 60s
             byte[] buffer = engine.receive(reqId, System.currentTimeMillis(), 60 * 1000);
             JSONObject resp = JSON.parseObject(buffer);
-            if (EResponseCode.SUCCESS.equals(resp.getString("response_code"))) {
+            if (EResponseCode.SUCCESS.getCode().equals(resp.getString("response_code"))) {
                 // unpaired succeeded
                 doUnpaired(device);
             }
