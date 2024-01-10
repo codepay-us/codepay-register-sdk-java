@@ -115,7 +115,6 @@ public class ECRHubSerialPortClientTest {
         request.setOrig_merchant_order_no("O1695032342508");
         request.setMerchant_order_no("O" + System.currentTimeMillis());
         request.setOrder_amount("10");
-        request.setPay_scenario(EPayScenario.SWIPE_CARD.getVal());
 
         // Setting read timeout,the timeout set here is valid for this request
         ECRHubConfig requestConfig = new ECRHubConfig();
@@ -149,7 +148,6 @@ public class ECRHubSerialPortClientTest {
         request.setOrig_merchant_order_no("O1695032342508");
         request.setMerchant_order_no("O" + System.currentTimeMillis());
         request.setOrder_amount("1");
-        request.setPay_scenario(EPayScenario.SWIPE_CARD.getVal());
 
         System.out.println("Refund request:" + request);
         RefundResponse response = client.execute(request);

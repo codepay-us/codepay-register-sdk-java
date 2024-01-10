@@ -148,12 +148,9 @@ service.unpair(device);
 ```
 
 ### 4.2 Connect
-Select a paired terminal to initiate a network connection, and once the connection is established, transaction instructions can be sent.
+Select a terminal to initiate a network connection, and once the connection is established, transaction instructions can be sent.
 
-#### 4.2.1 Call process
-<ImageZoom src={rigiserConnect}/>
-
-#### 4.2.2 Create client instance
+#### 4.2.1 Create client instance
 
 **WLAN connection mode**
 > When a POS application connects to a POS terminal using WLAN, use the following method to create a client
@@ -196,7 +193,7 @@ config.getSerialPortConfig().setReadTimeout(120 * 1000);
 ECRHubClient client = ECRHubClientFactory.create("sp://", config);
 ```
 
-#### 4.2.3 Connection
+#### 4.2.2 Connection
 Establish a connection between the POS application and the POS terminal.
 
 ```java
@@ -204,7 +201,7 @@ Establish a connection between the POS application and the POS terminal.
 client.connect();
 ```
 
-#### 4.2.4 Disconnect
+#### 4.2.3 Disconnect
 Disconnect the POS application from the POS terminal.
 
 ```java
@@ -222,6 +219,7 @@ client.disconnect();
 ```java
 import com.codepay.register.sdk.model.request.SaleRequest;
 import com.codepay.register.sdk.model.response.SaleResponse;
+import com.codepay.register.sdk.enums.EPayScenario;
 
 // Build sale request
 SaleRequest request = new SaleRequest();
@@ -247,12 +245,9 @@ System.out.println("Sale Response:" + response);
 2. Example:
 
 ```java
-import com.codepay.register.sdk.model.request.SaleRequest;
-import com.codepay.register.sdk.model.response.SaleResponse;
-
-// Build sale request
 import com.codepay.register.sdk.model.request.SaleWithCashbackRequest;
 import com.codepay.register.sdk.model.response.SaleWithCashbackResponse;
+import com.codepay.register.sdk.enums.EPayScenario;
 
 // Build sale with cashback request
 SaleWithCashbackRequest request = new SaleWithCashbackRequest();
@@ -268,12 +263,57 @@ requestConfig.getSerialPortConfig().setReadTimeout(2 * 60 * 1000);
 request.setConfig(requestConfig);
         
 // Execute sale with cashback request
-System.out.println("Sale Request:" + request);
+System.out.println("SaleWithCashback Request:" + request);
 SaleWithCashbackResponse response = client.execute(request);
-System.out.println("Sale Response:" + response);
+System.out.println("SaleWithCashback Response:" + response);
 ```
 
-#### 4.3.3 Void
+#### 4.3.3 Authorization
+
+1. <a href="https://developer.codepay.us/docs/CodePayRegisterSDK#65-authorization">Request/Response parameters</a>
+2. Example:
+
+```java
+import com.codepay.register.sdk.model.request.AuthRequest;
+import com.codepay.register.sdk.model.response.AuthResponse;
+import com.codepay.register.sdk.enums.EPayScenario;
+
+// Build authorization request
+AuthRequest request = new AuthRequest();
+request.setApp_id("Your payment appid"); // Setting your payment application ID
+request.setMerchant_order_no("O123456789");
+request.setOrder_amount("1");
+request.setPay_scenario(EPayScenario.SWIPE_CARD.getVal());
+        
+// Execute authorization request
+System.out.println("Authorization Request:" + request);
+AuthResponse response = client.execute(request);
+System.out.println("Authorization Response:" + response);
+```
+
+#### 4.3.4 Completion
+
+1. <a href="https://developer.codepay.us/docs/CodePayRegisterSDK#66-completion">Request/Response parameters</a>
+2. Example:
+
+```java
+import com.codepay.register.sdk.model.request.CompletionRequest;
+import com.codepay.register.sdk.model.response.CompletionResponse;
+
+// Build completion request
+CompletionRequest request = new CompletionRequest();
+request.setApp_id("Your payment appid"); // Setting your payment application ID
+request.setOrig_merchant_order_no("O1695032342508");// The merchant order number of the original Authorization order
+request.setMerchant_order_no("O123456789");
+request.setOrder_amount("1");
+        
+// Execute completion request
+System.out.println("Completion Request:" + request);
+CompletionResponse response = client.execute(request);
+System.out.println("Completion Response:" + response);
+```
+
+#### 4.3.5 Void
 
 1. <a href="https://developer.codepay.us/docs/CodePayRegisterSDK#63-void">Request/Response parameters</a>
 2. Example:
@@ -293,7 +333,7 @@ VoidResponse response = client.execute(request);
 System.out.println("Void Response:" + response);
 ```
 
-#### 4.3.4 Refund
+#### 4.3.6 Refund
 
 1. <a href="https://developer.codepay.us/docs/CodePayRegisterSDK#64-refund">Request/Response parameters</a>
 2. Example:
@@ -308,57 +348,11 @@ request.setApp_id("Your payment appid"); // Setting your payment application ID
 request.setOrig_merchant_order_no("O1695032342508");// The merchant order number of the original order
 request.setMerchant_order_no("O123456789");
 request.setOrder_amount("1");
-request.setPay_scenario(EPayScenario.SWIPE_CARD.getVal());
         
 // Execute refund request
 System.out.println("Refund Request:" + request);
 RefundResponse response = client.execute(request);
 System.out.println("Refund Response:" + response);
-```
-
-#### 4.3.5 Authorization
-
-1. <a href="https://developer.codepay.us/docs/CodePayRegisterSDK#65-authorization">Request/Response parameters</a>
-2. Example:
-
-```java
-import com.codepay.register.sdk.model.request.AuthRequest;
-import com.codepay.register.sdk.model.response.AuthResponse;
-
-// Build authorization request
-AuthRequest request = new AuthRequest();
-request.setApp_id("Your payment appid"); // Setting your payment application ID
-request.setMerchant_order_no("O123456789");
-request.setOrder_amount("1");
-request.setPay_scenario(EPayScenario.SWIPE_CARD.getVal());
-        
-// Execute authorization request
-System.out.println("Authorization Request:" + request);
-AuthResponse response = client.execute(request);
-System.out.println("Authorization Response:" + response);
-```
-
-#### 4.3.6 Completion
-
-1. <a href="https://developer.codepay.us/docs/CodePayRegisterSDK#66-completion">Request/Response parameters</a>
-2. Example:
-
-```java
-import com.codepay.register.sdk.model.request.CompletionRequest;
-import com.codepay.register.sdk.model.response.CompletionResponse;
-
-// Build completion request
-CompletionRequest request = new CompletionRequest();
-request.setApp_id("Your payment appid"); // Setting your payment application ID
-request.setOrig_merchant_order_no("O1695032342508");// The merchant order number of the original Authorization order
-request.setMerchant_order_no("O123456789");
-request.setOrder_amount("1");
-request.setPay_scenario(EPayScenario.SWIPE_CARD.getVal());
-        
-// Execute completion request
-System.out.println("Completion Request:" + request);
-CompletionResponse response = client.execute(request);
-System.out.println("Completion Response:" + response);
 ```
 
 #### 4.3.7 Query
