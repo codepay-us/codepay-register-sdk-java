@@ -26,10 +26,9 @@ Compared with API interface development, RegisterSDK integration is easier, prov
 
 2. Download the jar package and add it to your project, please refer to the GitHub source code.
 
-| Source code & Library                                                |    WLAN Mode     | USB Mode  |
-|------------------------------------------------------------------------------------|:------------------------------:|:-----------------------:|
-| https://github.com/codepay-us/codepay-register-sdk-java                            | Windows/Linux/MacOS |   Windows    |
-| https://github.com/codepay-us/codepay-register-cross-terminal-integration-demo-java |              Windows/Linux/MacOS                  |      Windows                   |
+| Source code & Library                                                                                      |    WLAN Mode     | USB Mode  |
+|------------------------------------------------------------------------------------------------------------|:------------------------------:|:-----------------------:|
+| <a href="https://github.com/codepay-us/codepay-register-sdk-java/tree/1.0.0">codepay-register-sdk-java</a> | Windows/Linux/MacOS |   Windows    |
 
 3. Maven dependencies
 > The SDK depends on some open-source third-party jars. If these jars are not integrated into your project, you will need to manually add dependencies to your project.
