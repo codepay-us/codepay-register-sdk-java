@@ -64,8 +64,8 @@ public abstract class ECRHubAbstractClient implements ECRHubClient {
 
     protected abstract <T extends ECRHubResponse> T getResp(ECRHubRequest<T> request) throws ECRHubException;
 
-    protected byte[] pack(ECRHubRequest request) throws ECRHubException {
-        JSONObject bizData = JSON.parseObject(request.toString());
+    protected byte[] pack(ECRHubRequest request) {
+        JSONObject bizData = JSON.parseObject(JSON.toJSONString(request));
         bizData.remove("topic");
         bizData.remove("app_id");
         bizData.remove("request_id");
