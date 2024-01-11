@@ -12,7 +12,7 @@ public interface ECRHubDiscoveryService {
 
     void start() throws ECRHubException;
 
-    void stop();
+    void stop() throws ECRHubException;
 
     boolean isRunning();
 

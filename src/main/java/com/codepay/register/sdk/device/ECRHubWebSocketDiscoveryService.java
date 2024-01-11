@@ -110,7 +110,7 @@ public class ECRHubWebSocketDiscoveryService implements WebSocketClientListener,
     }
 
     @Override
-    public void stop() {
+    public void stop() throws ECRHubException {
         if (!running) {
             return;
         }
@@ -121,7 +121,7 @@ public class ECRHubWebSocketDiscoveryService implements WebSocketClientListener,
             jmDNS.close();
             running = false;
         } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
+            throw new ECRHubException(e);
         }
     }
 
@@ -185,7 +185,10 @@ public class ECRHubWebSocketDiscoveryService implements WebSocketClientListener,
                 doUnpaired(device);
             }
         } catch (ECRHubException | URISyntaxException | InterruptedException e) {
-            throw new RuntimeException(e);
+            if (e instanceof ECRHubException) {
+                throw (ECRHubException) e;
+            }
+            throw new ECRHubException(e);
         }
     }
 
@@ -310,7 +313,7 @@ public class ECRHubWebSocketDiscoveryService implements WebSocketClientListener,
 
         @Override
         public void serviceAdded(ServiceEvent event) {
-
+            serviceResolved(event);
         }
 
         @Override
