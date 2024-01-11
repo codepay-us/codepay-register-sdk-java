@@ -68,7 +68,7 @@ public class ECRHubWebSocketClient extends ECRHubAbstractClient {
     @Override
     protected <T extends ECRHubResponse> void sendReq(ECRHubRequest<T> request) throws ECRHubException {
         byte[] buffer = pack(request);
-        engine.send(new String(buffer));
+        engine.send(buffer);
     }
 
     @Override
