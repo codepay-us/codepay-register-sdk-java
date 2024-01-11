@@ -19,7 +19,7 @@ public class SaleWithCashbackRequest extends ECRHubRequest<SaleWithCashbackRespo
      *
      * For example: 11
      */
-    private String trans_type = ETransType.CASH_BACK.getCode();
+    private String trans_type = ETransType.CASHBACK.getCode();
     /**
      * Merchant order No.
      * The order number for the refund request when refunded, different from the order number of the original consumer transaction. No more than 32 alphanumeric characters.

@@ -24,7 +24,7 @@ public enum ETransType {
     /**
      * Cashback
      */
-    CASH_BACK("11");
+    CASHBACK("11");
 
     ETransType(String code) {
         this.code = code;
