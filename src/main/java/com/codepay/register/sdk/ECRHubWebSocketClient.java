@@ -24,8 +24,26 @@ public class ECRHubWebSocketClient extends ECRHubAbstractClient {
         super(config);
         try {
             this.engine = new WebSocketClientEngine(new URI(url));
+            this.engine.setCallback(new WebSocketClientEngine.Callback() {
+                @Override
+                public void onError(Exception ex) {
+                    connected = false;
+                }
+
+                @Override
+                public void onClose(int code, String reason, boolean remote) {
+                    connected = false;
+                }
+            });
         } catch (Exception e) {
             throw new ECRHubException("ecrWebSocketClient error", e);
+        }
+    }
+
+    @Override
+    protected void autoConnect() throws ECRHubException {
+        if (!connected) {
+            connect();
         }
     }
 

@@ -17,6 +17,35 @@ import java.nio.charset.StandardCharsets;
 
 public class WebSocketClientEngine extends WebSocketClient {
 
+    public interface Callback {
+        default void onOpen(ServerHandshake handshakedata) {
+        }
+
+
+        default void onClose(int code, String reason, boolean remote) {
+        }
+
+
+        default void onError(Exception ex) {
+        }
+
+
+        default void onMessage(String message) {
+        }
+
+
+        default void onMessage(ByteBuffer buffer) {
+
+        }
+
+    }
+
+    private Callback callback;
+
+    public void setCallback(Callback callback) {
+        this.callback = callback;
+    }
+
     private static final Logger log = LoggerFactory.getLogger(WebSocketClientEngine.class);
 
     private final FIFOCache<String, byte[]> MSG_CACHE = new FIFOCache<>(20, 10 * 60 * 1000);
@@ -25,23 +54,36 @@ public class WebSocketClientEngine extends WebSocketClient {
         super(serverUri);
     }
 
+
     @Override
     public void onOpen(ServerHandshake handshakedata) {
         log.info("socket connect success:{}", this.getRemoteSocketAddress());
+        if (null != callback) {
+            callback.onOpen(handshakedata);
+        }
     }
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
         log.info("socket onClose. code: {},reason: {},remote: {}", code, reason, remote);
+        if (null != callback) {
+            callback.onClose(code, reason, remote);
+        }
     }
 
     @Override
     public void onError(Exception ex) {
         log.error("socket onError. ", ex);
+        if (null != callback) {
+            callback.onError(ex);
+        }
     }
 
     @Override
     public void onMessage(String message) {
+        if (null != callback) {
+            callback.onMessage(message);
+        }
         byte[] bytes = message.getBytes(StandardCharsets.UTF_8);
         onMessage(ByteBuffer.wrap(bytes));
     }
@@ -51,6 +93,9 @@ public class WebSocketClientEngine extends WebSocketClient {
         byte[] bytes = buffer.array();
         if (log.isDebugEnabled()) {
             log.debug("onMessage:{}", new String(bytes));
+        }
+        if (null != callback) {
+            callback.onMessage(buffer);
         }
 
         JSONObject resp;

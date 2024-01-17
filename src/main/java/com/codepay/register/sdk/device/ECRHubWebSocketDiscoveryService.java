@@ -88,6 +88,7 @@ public class ECRHubWebSocketDiscoveryService implements WebSocketClientListener,
         try {
             InetAddress siteLocalAddress = NetHelper.getLocalhost();
             jmDNS = JmDNS.create(siteLocalAddress);
+            jmDNS.unregisterAllServices();
             deviceServiceListener = new DeviceServiceListener();
             this.engine = new WebSocketServerEngine();
             this.engine.setClientListener(this);
