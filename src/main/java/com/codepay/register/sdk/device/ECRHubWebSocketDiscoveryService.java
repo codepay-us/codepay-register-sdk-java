@@ -100,7 +100,8 @@ public class ECRHubWebSocketDiscoveryService implements WebSocketClientListener,
             info.put("os_name", SystemUtil.getOsInfo().getName());
             info.put("os_version", SystemUtil.getOsInfo().getVersion());
             info.put("host_name", localHostName);
-            ServiceInfo serviceInfo = ServiceInfo.create(ECR_HUB_CLIENT_MDNS_SERVICE_TYPE, localHostName, engine.getPort(), info.toJSONString());
+            ServiceInfo serviceInfo = ServiceInfo.create(ECR_HUB_CLIENT_MDNS_SERVICE_TYPE,
+                    localHostName + "_" + System.currentTimeMillis(), engine.getPort(), info.toJSONString());
             jmDNS.registerService(serviceInfo);
             log.info("mdns register success, service name: {}", serviceInfo.getName());
         } catch (IOException e) {
@@ -350,7 +351,8 @@ public class ECRHubWebSocketDiscoveryService implements WebSocketClientListener,
 
     private ECRHubDevice buildFromServiceInfo(ServiceInfo info) {
         ECRHubDevice device = new ECRHubDevice();
-        device.setTerminal_sn(info.getName());
+        // device.setTerminal_sn(info.getName());
+        device.setTerminal_sn(info.getPropertyString("device_sn"));
         device.setApp_version(info.getPropertyString("app_version"));
         device.setApp_name(info.getPropertyString("app_name"));
         device.setWs_address(buildWSAddress(info.getHostAddresses()[0], info.getPort()));
