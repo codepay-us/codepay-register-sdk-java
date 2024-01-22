@@ -320,18 +320,18 @@ public class ECRHubWebSocketDiscoveryService implements WebSocketClientListener,
 
         @Override
         public void serviceRemoved(ServiceEvent event) {
-            ECRHubDevice device = buildFromServiceInfo(event.getInfo());
-            log.info("removed device:{}", device);
-            deviceMap.remove(device.getTerminal_sn());
+            String terminal_sn = event.getName().substring(0, StrUtil.lastIndexOfIgnoreCase(event.getName(), "_"));
+            log.info("removed device:{}", terminal_sn);
+            ECRHubDevice ecrHubDevice = deviceMap.get(terminal_sn);
+            deviceMap.remove(terminal_sn);
             if (null != ecrHubDeviceEventListener) {
-                ecrHubDeviceEventListener.onRemoved(device);
+                ecrHubDeviceEventListener.onRemoved(ecrHubDevice);
             }
         }
 
         @Override
         public void serviceResolved(ServiceEvent event) {
             ECRHubDevice device = buildFromServiceInfo(event.getInfo());
-
             ECRHubDevice ecrHubDevice = deviceMap.get(device.getTerminal_sn());
             if (null != ecrHubDevice) {
                 String wsAddress = ecrHubDevice.getWs_address();
